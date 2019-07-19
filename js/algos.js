@@ -64,7 +64,7 @@ function swap(i,j)
   temp = csvData[i];
   csvData[i] = csvData[j];
   csvData[j] = temp;  
-  displayBuffer.push(['swap', i, j]); // Do not delete this line (for display)
+  //displayBuffer.push(['swap', i, j]); // Do not delete this line (for display)
  
 }
 
@@ -97,16 +97,17 @@ function insertsort()
 
 function selectionsort()
 {
-  console.log(csvData);
-console.log("selection sort start");
-console.log(csvData);
+  console.log("selectionsort - implement me before sort !");
+  for (var f = 0 ; f < csvData.length;f++){
+    console.log(csvData[f].dist);
+  }
   var taille = Number(csvData.length);
   
   for (i = 0 ; i < taille ; i++ ){
     //if (Math.floor(Number(csvData[i].dist)) < Math.floor(Number(csvData[p].dist)) )  {
     //  p = i;
    /// }
-   var p = 0;
+   var p = i;
     for (var j = i + 1  ;j < taille ; j++ ){
         if (Math.floor(Number(csvData[j].dist)) < Math.floor(Number(csvData[p].dist))){
           p = j; 
@@ -116,6 +117,11 @@ console.log(csvData);
     } 
   }
   console.log("selectionsort - implement me !");
+  for (var f = 0 ; f < csvData.length;f++){
+    console.log(csvData[f].dist);
+  }
+  
+  
 }
 
 function bubblesort()
