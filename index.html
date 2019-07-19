@@ -70,8 +70,8 @@
             nom_ddpt: d.nom_ddpt,
             nom_commune: d.nom_commune,
             codes_postaux: d.codes_postaux,
-            dist: distanceFromGrenoble(d),
-            str: d.nom_commune + " ("+d.num_dpt+") " + Math.floor(distanceFromGrenoble(d)) + "km"
+            dist: Math.round(Math.floor(distanceFromGrenoble(d))),
+            str: d.nom_commune + " ("+d.num_dpt+") " + Math.round(Math.floor(distanceFromGrenoble(d))) + "km"
           };
           }).then(function(data) {
             csvData = filterData(data);
