@@ -125,12 +125,10 @@ function mergesort(){
   console.log("mergesort - implement me !");
   let a = new Array({dist:59},{dist:57},{dist:52},{dist:50},{dist:58},{dist:55},{dist:1},{dist:25},{dist:18},{dist:20})
   let profondeur = 1;
-  ms(csvData,profondeur,true); 
+  ms(csvData,profondeur,false); 
   //setupDisplay();
   console.log(a);
 }
-
-
 function ms(a,profondeur,debug){
   if (a.length < 2 ) return // array déjà trié. un seul element dans l'array 
   //splitting the array 
@@ -157,14 +155,13 @@ function ms(a,profondeur,debug){
   //console.log("after merge");
   //console.log(a);
 } 
-
 function merge(left , right ,a){
   var l = 0 
   var r = 0
   var k =0;
 
 
-  // boucle finale . les deux tableau doivent etre triés !
+  // boucle finale . les deux tableaux doivent etre triés !
   while(l < left.length && r < right.length){
     if (parseInt(left[l].dist) <= parseInt(right[r].dist)){
       a[k] = left[l];
@@ -182,7 +179,7 @@ function merge(left , right ,a){
     k++;
   }
   //--------------------------------------
-  // on remplie le generale si l'un des deux tableaux left et right  G est en fin d'indice.
+  // on remplie le general si l'un des deux tableaux left et right est en fin d'indice.
   // Seulement un des deux while sera executé. 
   while ( l < left.length){
     a[k] = left[l];
@@ -201,14 +198,52 @@ function merge(left , right ,a){
   }
 }
 
-
 /**********************************************************************************
  * HEAP SORT
  **********************************************************************************/
-function heapsort()
-{
+function heapsort(){
   console.log("heapsort - implement me !");
+  var test = new Array({dist:9},{dist:7},{dist:2},{dist:4},{dist:8},{dist:5},{dist:1},{dist:6},{dist:3},{dist:10})
+  // create heap
+  
+  SortH(csvData);
+  console.log(csvData)
 }
+function SortH(arr){
+  var n = arr.length;
+  // Build max heap
+  for (var i = Math.floor(n / 2 - 1); i >= 0; i--) {
+    heapify(arr, n, i);
+  }
+  for (var i = n-1; i >= 0; i--)
+  {
+    //swap()
+    swap(0,i);
+    // Heapify root element
+    heapify(arr, i, 0);
+  }
+}
+function heapify(arr,  n, i){
+	// Find largest among root, left child and right child
+  let  largest = i; 
+  let l = 2 * i + 1; 
+  let r = 2 * i + 2;  
+
+  if (l < n && parseInt(arr[l].dist) > parseInt(arr[largest].dist)){
+    largest = l;
+  }
+  if (r < n && parseInt(arr[r].dist) > parseInt(arr[largest].dist)){
+    largest = r;
+  }
+  // Swap and continue heapifying if root is not largest
+  if (largest != i)
+  {
+     // swap
+     swap(i,largest); 
+     heapify(arr, n, largest);
+  }
+}
+
 /**********************************************************************************
  * QHICK SORT
  **********************************************************************************/
