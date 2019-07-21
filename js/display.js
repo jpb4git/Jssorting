@@ -2,26 +2,36 @@
 var COMPARE_COLOR = '#00f';
 var SWAP_COLOR = '#0f0';
 var DEFAULT_COLOR = '#000';
+var RECURSIVE_COLOR ='#F01230';
 
 var prev1 = null;
 var prev2 = null;
 var displayBuffer = [];
 
-function swap_attr(p1,p2,attr)
-{
+function swap_attr(p1,p2,attr){
   var tmp = p1.attr(attr);
   p1.attr(attr,p2.attr(attr));
   p2.attr(attr,tmp);
 }
 
-function swap_rect(p1,p2)
-{
+function swap_rect(p1,p2){
   swap_attr(p1,p2,"x");
   swap_attr(p1,p2,"id");
 }
 
-function getRect(i)
-{
+//personnal test for recursive algo
+/*************************************************** */
+function affectation(p1,p2){
+  affectation_rect_attr(p1,p2,"x");
+  affectation_rect_attr(p1,p2,"id");
+}
+function affectation_rect_attr(p1,p2,attr){
+  p1.attr(attr,p2.attr(attr));
+}
+//************************************************* */
+
+
+function getRect(i){
   return d3.select("rect#c"+i);
 }
 
@@ -54,12 +64,15 @@ var oneStep = function() {
     swap_rect(i,j);
     i.attr("fill",SWAP_COLOR);
     j.attr("fill",SWAP_COLOR);
+    // add Recursive color 
+  }else if ((action[0] === 'set')){
+    i.attr("fill",RECURSIVE_COLOR);
   }
+
 };
 
 
-function setupDisplay()
-{
+function setupDisplay(){
 
   var w= 800;
   var h= 400;
@@ -115,6 +128,7 @@ function setupDisplay()
   $(window).resize(resize_canvas);
 
 }
+
 
 function filterData(data)
 {
