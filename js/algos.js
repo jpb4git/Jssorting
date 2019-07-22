@@ -20,7 +20,7 @@ function distanceFromGrenoble(city){
   var distance = R * c;
 
 
-return  distance / 1000;
+return  parseInt(distance / 1000);
 
 }
   /**
@@ -60,6 +60,7 @@ function insertsort(){
 
    // on sort par distance 
    console.log("csvData start sorting ");
+  console.log(csvData.length);
 
    for (var i = 1; i < csvData.length; i++){
       for (var k = i ; k > 0 && isLess(k,k-1); k--){
@@ -106,17 +107,54 @@ function bubblesort(){
  * SHELL SORT
  **********************************************************************************/
 function shellsort(){
- //var test = new Array({dist:59},{dist:57},{dist:52},{dist:50},{dist:58},{dist:55},{dist:1},{dist:25},{dist:18},{dist:20})
- var middle = Math.round(csvData.length/2);
+ //shellsort2();
+ //return null; 
+ var test = new Array({dist:59},{dist:57},{dist:52},{dist:50},{dist:58},{dist:55},{dist:1},{dist:25},{dist:18},{dist:20},{dist:24})
+ //csvData.pop();
+ //csvData = [...test];
+ //console.log(csvData);
+ var middle = Math.floor(csvData.length/2);
  var longueur = csvData.length;
   //gaped for 
-  for (var gap = middle ; gap > 0; gap -= 1){
+ let count = 0; 
+ 
+ for (var gap = middle ; gap > 0; gap -= 1){
     for (var i = 0 ; (i + gap) < longueur ;i++){
-      if (parseInt(csvData[i + gap].dist) < parseInt(csvData[i].dist)){
+      if (parseInt(csvData[i + gap].dist) > parseInt(csvData[i].dist)){
           swap(i + gap , i);
+         
         }
     }
   }
+
+}
+
+function shellsort2(){
+  var test = new Array({dist:59},{dist:57},{dist:52},{dist:50},{dist:58},{dist:55},{dist:1},{dist:25},{dist:18},{dist:20},{dist:24})
+  //csvData.pop();
+  //csvData = [...test];
+  //console.log(csvData);
+  var middle = Math.floor(csvData.length/2);
+  var longueur = csvData.length;
+   //gaped for 
+  let count = 0;
+  let h = 1 ; 
+  // decoupage optimal
+  while (h <  (csvData.length / 3) ){
+    h = 3*h+1;
+  }
+  console.log(h);
+  while ( h >  0 ){
+     for (var gap = h ; gap < longueur ; gap += h ){ 
+         for (var i = gap ; i > 0 ; i -= h){
+           if (parseInt(csvData[i].dist) < parseInt(csvData[i-h].dist)){
+               swap(i , i-h);
+               //count++;
+             }
+         }
+       }
+   h = Math.floor(h / 3); 
+ }
 }
 /**********************************************************************************
  * MERGE  SORT
@@ -126,15 +164,20 @@ function mergesort(){
   let a = new Array({dist:59},{dist:57},{dist:52},{dist:50},{dist:58},{dist:55},{dist:1},{dist:25},{dist:18},{dist:20})
   let profondeur = 1;
   ms(csvData,profondeur,false); 
-  //setupDisplay();
-  console.log(a);
+  console.log(csvData);
+  setupDisplay();
+  //console.log(a);
 }
 function ms(a,profondeur,debug){
   if (a.length < 2 ) return // array déjà trié. un seul element dans l'array 
+
   //splitting the array 
   let mid = Math.floor(a.length / 2);
   let left = a.slice(0, mid);
   let right= a.slice(mid, a.length);
+  console.log(left)
+  console.log(right)
+  
  
   if (debug){
     console.log("profondeur : " + profondeur)
@@ -145,57 +188,76 @@ function ms(a,profondeur,debug){
     console.log("right")
     console.log(right)
  }
-
+  
   //recursive call for eatch part
   ms(left,profondeur+1,debug);
   ms(right,profondeur+1,debug);
   //mergin the sorted parts
   merge(left,right,a,profondeur);
-  setupDisplay(a)
-  //console.log("after merge");
+  //setupDisplay(a)
+  console.log("after merge");
   //console.log(a);
 } 
+
+
 function merge(left , right ,a){
   var l = 0 
   var r = 0
   var k =0;
-
+ 
 
   // boucle finale . les deux tableaux doivent etre triés !
   while(l < left.length && r < right.length){
+    
     if (parseInt(left[l].dist) <= parseInt(right[r].dist)){
-      a[k] = left[l];
-      recursive(k)
-      recursive(l)
+        //position = csvData.indexOf(left[l]);
+        //swap(k,position);
+        recursive(k)
+        recursive(l)
+        a[k] = left[l];
+      //recursive(k)
+      //recursive(l)
       //affectation(k,l);
       l++;
     }else{
-      a[k] = right[r];
-      recursive(k)
-      recursive(r)
+
+        position = csvData.indexOf(right[r]);
+        //swap(k,position);
+        recursive(k)
+        recursive(r)
+        a[k] = right[r];
       //affectation(k,r);
       r++;
     }
+
+
     k++;
   }
   //--------------------------------------
   // on remplie le general si l'un des deux tableaux left et right est en fin d'indice.
   // Seulement un des deux while sera executé. 
   while ( l < left.length){
-    a[k] = left[l];
-    recursive(k)
-    recursive(l)
+   
+     // position = csvData.indexOf(left[l]);
+     // swap(k,position);
+      recursive(k)
+      recursive(l)
+      a[k] = left[l];
    l++;
    k++;
   }
 
   while ( r < right.length){
-    a[k] = right[r];
-    recursive(k)
-    recursive(r)
+        //position = csvData.indexOf(right[r]);
+        //swap(k,position);
+        a[k] = right[r];
+        recursive(k)
+        recursive(r)
    r++;
    k++;
   }
+
+
 }
 
 /**********************************************************************************
@@ -249,7 +311,52 @@ function heapify(arr,  n, i){
  **********************************************************************************/
 function quicksort(){
   console.log("quicksort - implement me !");
+  var test = new Array({dist:9},{dist:7},{dist:2},{dist:4},{dist:8},{dist:5},{dist:1},{dist:6},{dist:3},{dist:10})
+  qSort(csvData, 0, csvData.length - 1);
+  //var sortedArray = quickSort(test, 0, test.length - 1);
 }
+
+
+function partition(items, left, right) {
+  var pivot   = items[Math.floor((right + left) / 2)], //middle element
+      i       = left, //left pointer
+      j       = right; //right pointer
+  while (i <= j) {
+      while (items[i].dist <= pivot.dist) {
+          i++;
+      }
+      while (items[j].dist >= pivot.dist) {
+          j--;
+      }
+      if (i <= j) {
+          swap(i, j); //sawpping two elements
+          i++;
+          j--;
+      }
+  }
+  return i;
+}
+
+function qSort(items, left, right) {
+  var index;
+  if (items.length > 1) {
+      index = partition(items, left, right); //index returned from partition
+      if (left < index - 1) { //more elements on the left side of the pivot
+          qSort(items, left, index - 1);
+      }
+      if (index < right) { //more elements on the right side of the pivot
+          qSort(items, index, right);
+      }
+  }
+ // return items;
+}
+// first call to quick sort
+
+
+
+
+
+
 /**********************************************************************************
  * QUICK3 SORT
  **********************************************************************************/
@@ -260,6 +367,8 @@ function quick3sort(){
 
 function sort(algo)
 {
+
+  console.time("heapsort")
   switch (algo)
   {
     case 'insert': insertsort();break;
@@ -272,4 +381,6 @@ function sort(algo)
     case 'quick3': quick3sort();break;
     default: throw 'Invalid algorithm ' + algo;
   }
+ 
+  console.timeEnd("heapsort")
 }

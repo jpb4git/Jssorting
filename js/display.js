@@ -130,6 +130,7 @@ function setupDisplay(){
 }
 
 
+
 function filterData(data)
 {
   function num_dptIsntNAN(elt) {
