@@ -1,3 +1,4 @@
+var test = new Array({dist:9},{dist:7},{dist:2},{dist:4},{dist:8},{dist:5},{dist:1},{dist:6},{dist:3},{dist:10});
 Number.prototype.toRadians = function(){
   return this * Math.PI / 180;
 }
@@ -35,10 +36,10 @@ return  parseInt(distance / 1000);
 function swap(i,j){
   displayBuffer.push(['swap', i, j]); // Do not delete this line (for display)
   var temp ; 
-  temp = Object.assign({}, csvData[i]);
-  csvData[i] = Object.assign({}, csvData[j]);
-  csvData[j] = Object.assign({},temp);  
   
+  temp =  csvData[i];
+  csvData[i] = csvData[j];
+  csvData[j] = temp; 
  
 }
 
@@ -128,7 +129,7 @@ function shellsort(){
   }
 
 }
-
+// version 2  renaud
 function shellsort2(){
   var test = new Array({dist:59},{dist:57},{dist:52},{dist:50},{dist:58},{dist:55},{dist:1},{dist:25},{dist:18},{dist:20},{dist:24})
   //csvData.pop();
@@ -157,18 +158,18 @@ function shellsort2(){
  }
 }
 /**********************************************************************************
- * MERGE  SORT
+ * MERGE  SORT  array duplication
  **********************************************************************************/
-function mergesort(){
+function mergesort2(){
   console.log("mergesort - implement me !");
   let a = new Array({dist:59},{dist:57},{dist:52},{dist:50},{dist:58},{dist:55},{dist:1},{dist:25},{dist:18},{dist:20})
   let profondeur = 1;
-  ms(csvData,profondeur,false); 
+  ms2(csvData,profondeur,false); 
   console.log(csvData);
   setupDisplay();
   //console.log(a);
 }
-function ms(a,profondeur,debug){
+function ms2(a,profondeur,debug){
   if (a.length < 2 ) return // array déjà trié. un seul element dans l'array 
 
   //splitting the array 
@@ -190,17 +191,15 @@ function ms(a,profondeur,debug){
  }
   
   //recursive call for eatch part
-  ms(left,profondeur+1,debug);
-  ms(right,profondeur+1,debug);
+  ms2(left,profondeur+1,debug);
+  ms2(right,profondeur+1,debug);
   //mergin the sorted parts
-  merge(left,right,a,profondeur);
+  merge2(left,right,a,profondeur);
   //setupDisplay(a)
   console.log("after merge");
   //console.log(a);
 } 
-
-
-function merge(left , right ,a){
+function merge2(left , right ,a){
   var l = 0 
   var r = 0
   var k =0;
@@ -261,6 +260,71 @@ function merge(left , right ,a){
 }
 
 /**********************************************************************************
+ * MERGE  SORT  indice
+ **********************************************************************************/
+function mergesort() {
+  console.time("mergesort");
+  msort(0, csvData.length-1);
+  console.timeEnd("mergesort")
+  console.log(csvData);
+}
+function msort(left, right) {
+  if(left < right){
+      let middle = Math.floor((left+right)/2);
+      msort(left, middle);
+      msort(middle+1, right)
+      merge(left, middle, right);
+  }
+ 
+}
+function merge(left, middle, right){
+  let sizeLeft = middle - left + 1;
+  let sizeRight = right - middle;
+  let L = [];
+  let R = [];
+  for (let i=0; i<sizeLeft; ++i)
+      L[i] = csvData[left + i];
+  for (let j=0; j<sizeRight; ++j)
+      R[j] = csvData[middle + 1 + j];
+  let i = 0;
+  let j = 0;
+  let k=left;
+  while (i < sizeLeft && j < sizeRight){
+      if(L[i].dist<= R[j].dist){
+          let itemPos = csvData.indexOf(L[i]);
+          if(itemPos !== -1){
+              swap(k, itemPos);
+          }
+          i++;
+      }else{
+          let itemPos = csvData.indexOf(R[j]);
+          if(itemPos !== -1){
+              swap(k, itemPos);
+          }
+          j++;
+      }
+      k++;
+  }
+  while(i<sizeLeft){
+      let itemPos = csvData.indexOf(L[i]);
+      if(itemPos !== -1){
+          swap(k, itemPos);
+      }
+      i++;
+      k++;
+  }
+  while(j<sizeRight){
+      let itemPos = csvData.indexOf(R[j]);
+      if(itemPos !== -1){
+          swap(k, itemPos);
+      }
+      k++;
+      j++;
+  }
+}
+
+
+/**********************************************************************************
  * HEAP SORT
  **********************************************************************************/
 function heapsort(){
@@ -311,64 +375,125 @@ function heapify(arr,  n, i){
  **********************************************************************************/
 function quicksort(){
   console.log("quicksort - implement me !");
-  var test = new Array({dist:9},{dist:7},{dist:2},{dist:4},{dist:8},{dist:5},{dist:1},{dist:6},{dist:3},{dist:10})
-  qSort(csvData, 0, csvData.length - 1);
-  //var sortedArray = quickSort(test, 0, test.length - 1);
+  
+  let debut = 0;
+  let fin = csvData.length - 1;
+
+  console.time("execute_QuickSort");
+  execute_QuickSort(debut, fin,csvData);
+  console.timeEnd("execute_QuickSort");
 }
 
-
-function partition(items, left, right) {
-  var pivot   = items[Math.floor((right + left) / 2)], //middle element
-      i       = left, //left pointer
-      j       = right; //right pointer
-  while (i <= j) {
-      while (items[i].dist <= pivot.dist) {
-          i++;
-      }
-      while (items[j].dist >= pivot.dist) {
-          j--;
-      }
-      if (i <= j) {
-          swap(i, j); //sawpping two elements
-          i++;
-          j--;
-      }
+function execute_QuickSort(debut , fin, arr ){
+  if (debut < fin ) {
+    var indice_pivot = partitionner(debut, fin,arr);
+    execute_QuickSort(debut, indice_pivot - 1,arr);
+    execute_QuickSort(indice_pivot + 1, fin,arr);
   }
-  return i;
 }
 
-function qSort(items, left, right) {
-  var index;
-  if (items.length > 1) {
-      index = partition(items, left, right); //index returned from partition
-      if (left < index - 1) { //more elements on the left side of the pivot
-          qSort(items, left, index - 1);
-      }
-      if (index < right) { //more elements on the right side of the pivot
-          qSort(items, index, right);
-      }
+function partitionner (debut, fin, arr) {
+  var temp;
+  var valeur_pivot = arr[debut];
+  var d = debut+1;
+  var f = fin;
+  while (d < f) {
+      while (d < f && arr[f].dist >= valeur_pivot.dist) f--;
+      while (d < f && arr[d].dist <= valeur_pivot.dist) d++;
+      swap(d,f);
+    
   }
- // return items;
+  if (arr[d].dist > valeur_pivot.dist) d--;
+  
+  swap(debut,d);
+  return d;
 }
-// first call to quick sort
-
-
-
-
 
 
 /**********************************************************************************
- * QUICK3 SORT
+ * QUICK3 SORT 
  **********************************************************************************/
 function quick3sort(){
   console.log("quick3sort - implement me !");
-}
+  W3quicks(csvData, 0, csvData.length - 1); 
 
+}
+// 3-way partition based quick sort 
+function W3quicks(a,l , r) 
+{ 
+    if (r <= l) return; 
+    let i;
+    let j; 
+    // Note that i and j are passed as reference 
+    partition(a, l, r, i, j); 
+    // Recur 
+    quicksort(a, l, j); 
+    quicksort(a, i, r); 
+} 
+function partition(a, l, r, i, j) 
+{ 
+    i = l-1;
+    j = r; 
+    let p = l-1;
+    let q = r; 
+    let  v = a[r]; 
+  
+    while (true) 
+    { 
+        // From left, find the first element greater than 
+        // or equal to v. This loop will definitely terminate 
+        // as v is last element 
+        while (a[++i].dist < v.dist); 
+  
+        // From right, find the first element smaller than or 
+        // equal to v 
+        while (v.dist < a[--j].dist) 
+            if (j == l) 
+                break; 
+  
+        // If i and j cross, then we are done 
+        if (i >= j) break; 
+  
+        // Swap, so that smaller goes on left greater goes on right 
+        swap(csvData.indexOf(a[i]), csvData.indexOf(a[j])); 
+  
+        // Move all same left occurrence of pivot to beginning of 
+        // array and keep count using p 
+        if (a[i].dist == v.dist) 
+        { 
+            p++; 
+            swap(csvData.indexOf(a[p]), csvData.indexOf(a[i])); 
+        } 
+  
+        // Move all same right occurrence of pivot to end of array 
+        // and keep count using q 
+        if (a[j].dist == v.dist) 
+        { 
+            q--; 
+            swap(csvData.indexOf(a[j]), csvData.indexOf(a[q])); 
+        } 
+    } 
+  
+    // Move pivot element to its correct index 
+    swap(csvData.indexOf(a[i]), csvData.indexOf(a[r])); 
+  
+    // Move all left same occurrences from beginning 
+    // to adjacent to arr[i] 
+    j = i-1; 
+    for (var k = l; k < p; k++, j--) 
+        swap(csvData.indexOf(a[k]), csvData.indexOf(a[j])); 
+  
+    // Move all right same occurrences from end 
+    // to adjacent to arr[i] 
+    i = i+1; 
+    for (var k = r-1; k > q; k--, i++) 
+        swap(csvData.indexOf(a[i]), csvData.indexOf(a[k])); 
+} 
 
 function sort(algo)
 {
 
-  console.time("heapsort")
+  
   switch (algo)
   {
     case 'insert': insertsort();break;
@@ -382,5 +507,5 @@ function sort(algo)
     default: throw 'Invalid algorithm ' + algo;
   }
  
-  console.timeEnd("heapsort")
+ 
 }
